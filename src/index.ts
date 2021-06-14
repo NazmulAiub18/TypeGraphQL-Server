@@ -9,9 +9,10 @@ import { buildSchema, ArgumentValidationError } from "type-graphql";
 import { createConnection } from "typeorm";
 
 import { RegisterResolver } from "./modules/user/Register";
+import { ConfirmUserResolver } from "./modules/user/ConfirmUser";
 import { LoginResolver } from "./modules/user/Login";
-import { redis } from "./redis";
 import { MeResolver } from "./modules/user/Me";
+import { redis } from "./redis";
 
 // Declaration Merging to add types in express req.session
 declare module "express-session" {
@@ -24,7 +25,12 @@ const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [MeResolver, RegisterResolver, LoginResolver],
+    resolvers: [
+      MeResolver,
+      RegisterResolver,
+      ConfirmUserResolver,
+      LoginResolver,
+    ],
     // https://typegraphql.com/docs/authorization.html
     authChecker: ({ context: { req } }) => {
       // for @Authorized() decorator
